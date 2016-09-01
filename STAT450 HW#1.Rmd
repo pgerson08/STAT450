@@ -1,0 +1,98 @@
+---
+title: "STAT450 HW#1"
+author: "Paul Gerson"
+date: "August 31, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+title 	author 	date 	output
+Stat 450
+
+R Assignment 1
+
+Due Thursday, September 1 by 5pm on your GitHub repositories
+
+pdf_document
+
+Instructions: The entirety of this assignment must be submitted as an R Markdown file (.Rmd) on your GitHub repository. Use the .Rmd note handout files and the R Markdown cheat sheet as guidelines. You are encouraged to save this HW1.Rmd file and fill in the questions with your answers, then submit. I should be able to knit your .Rmd file and compile your code myself, so make sure you do some bug checks before submitting! (I.e., knit the document yourself a couple times and search for errors.)
+
+Consider Example 2 in the notes. 2 dice are rolled, one red and one white. Let $Y$ be the random variable that denotes the maximum value of the two rolls. We will use simulation to find the mean and variance of $Y$, and then verify that our simulated results match what we would expect theoretically.
+
+Theoretical section
+
+(3pts) Define the pmf, find $\mu = E(Y)$, $\sigma^2 = Var(Y)$, and $\sigma = SD(Y)$. Show all your work.
+y <- 1:6
+py <- c(1/36, 3/36, 5/36, 7/36/ 9/36, 11/36)
+
+mu <- sum(y * py)
+mu
+
+(2pts) Use ggplot() to plot the pmf; see Handout 1 notes for an example.
+
+install.packages('ggplot2')
+library(ggplot2)
+#mydata <- data.frame(p = p, py = p.y)
+dd <- data.frame(y = y, probs = py)
+ggplot(aes(x = y, y = probs), data = mydata) + geom_bar(stat='identity') + ylab('p(y)') + xlab('Y') + theme(axis.text.x = element_text(size = 20), axis.text.y = element_text(size = 12), axis.title.x = element_text(size = 20), axis.title.y = element_text(size = 14)) + ggtitle('Binomial(6,0,0.744) pmf')
+
+(2pts) Consider the random variable $Z=2Y+1$. What is $E(Z)$ and $Var(Z)$? Show all work.
+
+Simulation section
+
+Write a function called one.Y that simulates rolling two dice and returns the maximum roll. Try the function out a few times and include the results of these test-runs in your R Markdown output. I have written some code below to get you started; each line of "pseudo-code" should be repaced with actual code:
+  
+  one.Y <- function() {
+  SampleSpaceOne <- c(1,2,3,4,5,6)
+  RedDieOne <- sample(SampleSpaceOne, 1, replace = TRUE)
+  WhiteDieOne <- sample(SampleSpaceOne, 1, replace = TRUE)
+  RollTotal <- c(RedDieOne, WhiteDieOne)
+  RollMax <- max(RollTotal)
+  return(RollMax) }
+  one.Y()
+  
+
+one.Y()
+one.Y()
+
+Each of the following can be answered with 1-2 lines of R code (and corresponding output, of course)
+
+(2pts) Use replicate() to simulate the results of 1000 pairs of rolls. These are 1000 realizations of the random variable $Y$. Save the 1000 realizations in an object called many.Y.
+
+many.Y <- replicate(1000, one.Y())
+many.Y
+
+(2pts) Use ggplot() to create the empirical (i.e., observed) pmf of your simulation. See Handout 1 for example R code. How does it compare with your theoretical pmf?
+
+
+
+(1pt) What is the mean of the 1000 realizations? 7.(1pt) What is the variance of the 1000 realizations?
+
+mean(many.Y)
+var(many.Y)
+
+(1pt) What is the standard deviation of the 1000 realizations?
+
+sd(many.Y)
+
+(1pt) Create a new object called many.Z that creates 1000 realizations of $Z$.
+
+many.Z <- replicate(1000, one.Y())
+many.Z
+
+(1pt) What is the mean of $Z$?
+
+mean(many.Z)
+
+(1pt) What is the variance of $Z$?
+
+var(many.Z)
+
+(1pt) Note that your simulated results should be similar to the theoretical quantities; if they aren't, re-check your R code! What is the reason for any differences?
+
+Results tend to be similar between large samples of populations defined using similar parameters. The reason for the small differences is the difference in the number of occurences of each higher value between many.Y and many.Z.
